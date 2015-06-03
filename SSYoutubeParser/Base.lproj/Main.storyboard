@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="14D136" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="gyM-2a-NGV">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
+    </dependencies>
+    <scenes>
+        <!--View Controller-->
+        <scene sceneID="dGM-vS-iOd">
+            <objects>
+                <viewController id="gyM-2a-NGV" customClass="ViewController" customModule="SSYoutubeParser" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="DeW-lY-Gqs"/>
+                        <viewControllerLayoutGuide type="bottom" id="LQw-GK-loA"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="Hre-ej-wqE">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="LtL-JM-Gdl" customClass="AVPlayerView" customModule="SSYoutubeParser" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="LtL-JM-Gdl" secondAttribute="trailing" id="0cv-69-dw8"/>
+                            <constraint firstItem="LtL-JM-Gdl" firstAttribute="leading" secondItem="Hre-ej-wqE" secondAttribute="leading" id="OuO-Zt-vFi"/>
+                            <constraint firstItem="LtL-JM-Gdl" firstAttribute="top" secondItem="Hre-ej-wqE" secondAttribute="top" id="dNq-Bf-cjY"/>
+                            <constraint firstItem="LQw-GK-loA" firstAttribute="top" secondItem="LtL-JM-Gdl" secondAttribute="bottom" id="wOG-Eg-eAE"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="avPlayerView" destination="LtL-JM-Gdl" id="omx-go-3Io"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="5w8-Ii-CbB" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1138" y="552"/>
+        </scene>
+    </scenes>
+</document>
