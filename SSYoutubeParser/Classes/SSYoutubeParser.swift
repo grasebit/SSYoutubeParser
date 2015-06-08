@@ -10,8 +10,8 @@ import Foundation
 
 class SSYoutubeParser: NSObject {
    
-    static let kYoutubeURL:String = "https://m.youtube.com/watch?v="
-    //static let kYoutubeURL:String = "https://www.youtube.com/watch?v="
+    //static let kYoutubeURL:String = "https://m.youtube.com/watch?v="
+    static let kYoutubeURL:String = "https://www.youtube.com/watch?v="
     static let kPattern:String = "(url_encoded_fmt_stream_map\":\")(.*?)(\")"
     
     class func h264videosWithYoutubeID(youtubeID :String, completionHandler handler:(videoDictionary :[String:String]) -> Void) {
@@ -25,9 +25,8 @@ class SSYoutubeParser: NSObject {
         })
     }
     
-    class func getStreams(youtubeID :String) -> [String:String] {
+    private class func getStreams(youtubeID :String) -> [String:String] {
         var videoDictionary = [String:String]()
-        var videoArray = [String]()
         
         let url = NSURL(string: kYoutubeURL + youtubeID)
         let req = NSURLRequest(URL: url!)
@@ -83,9 +82,6 @@ class SSYoutubeParser: NSObject {
                             }
                         }
                         
-                        videoArray.append(quality as String)
-                        videoArray.append(streamUrl as String)
-                        
                         if videoDictionary[quality as String] == nil {
                             videoDictionary[quality as String] = streamUrl as String
                         }
@@ -97,13 +93,13 @@ class SSYoutubeParser: NSObject {
         return videoDictionary
     }
 
-    class func stringByDecodingURLFormat(value :NSString) -> NSString {
+    private class func stringByDecodingURLFormat(value :NSString) -> NSString {
         var result :NSString = value.stringByReplacingOccurrencesOfString("+", withString: " ")
         result = result.stringByReplacingPercentEscapesUsingEncoding(NSUTF8StringEncoding)!
         return result
     }
     
-    class func dictionaryFromQueryStringComponents(stream :NSString) -> [String:NSMutableArray] {
+    private class func dictionaryFromQueryStringComponents(stream :NSString) -> [String:NSMutableArray] {
         var parameters = [String:NSMutableArray]()
         
         for keyValue in stream.componentsSeparatedByString("&") {
