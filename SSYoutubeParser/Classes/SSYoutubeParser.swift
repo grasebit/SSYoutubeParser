@@ -12,7 +12,10 @@ class SSYoutubeParser: NSObject {
    
     //static let kYoutubeURL:String = "https://m.youtube.com/watch?v="
     static let kYoutubeURL:String = "https://www.youtube.com/watch?v="
-    static let kPattern:String = "(url_encoded_fmt_stream_map\":\")(.*?)(\")"
+    static let kYoutubeVideoInfoURL:NSString = "http://www.youtube.com/get_video_info?video_id=%@"
+    //static let kPattern:String = "(url_encoded_fmt_stream_map\":\")(.*?)(\")"
+    static let kPattern:String = "(url_encoded_fmt_stream_map=)(.*?)(&)"
+
     
     class func h264videosWithYoutubeID(youtubeID :String, completionHandler handler:(videoDictionary :[String:String]) -> Void) {
         
@@ -28,7 +31,8 @@ class SSYoutubeParser: NSObject {
     private class func getStreams(youtubeID :String) -> [String:String] {
         var videoDictionary = [String:String]()
         
-        let url = NSURL(string: kYoutubeURL + youtubeID)
+        let urlStr = NSString(format: kYoutubeVideoInfoURL, youtubeID)
+        let url = NSURL(string: urlStr as String)
         let req = NSURLRequest(URL: url!)
         
         var uRLResponse : NSURLResponse?
@@ -49,10 +53,13 @@ class SSYoutubeParser: NSObject {
         
         if let result = regex?.firstMatchInString(html as String!, options: NSMatchingOptions.allZeros, range: NSMakeRange(0, html!.length)) {
             
-            if let stream_map :NSString = html?.substringWithRange(result.rangeAtIndex(2)) {
-                var url_encoded_fmt_stream_map :NSString = stream_map.stringByReplacingOccurrencesOfString("\\u0026", withString: "&")
+            if let streamMap :NSString = html?.substringWithRange(result.rangeAtIndex(2)) {
                 
-                let fmtStreamMapArray = url_encoded_fmt_stream_map.componentsSeparatedByString(",") as! [String]
+                let decodeMap :NSString = streamMap.stringByRemovingPercentEncoding!
+                println(decodeMap)
+                //let url_encoded_fmt_stream_map :NSString = decodeMap.stringByReplacingOccurrencesOfString("\\u0026", withString: "&")
+                
+                let fmtStreamMapArray = decodeMap.componentsSeparatedByString(",") as! [String]
                 
                 for stream in fmtStreamMapArray {
                     let videoComponents = self.dictionaryFromQueryStringComponents(stream as NSString)

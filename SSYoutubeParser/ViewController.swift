@@ -13,7 +13,10 @@ class ViewController: UIViewController {
     
     @IBOutlet weak var avPlayerView: AVPlayerView!
     
-    let youtubeID = "NetDBUYr3OE"
+    //let youtubeID = "b2fjU9cmjXg"
+    //let youtubeID = "Dtkxu1HF6rk"
+    let youtubeID = "0JxL3zWIWtQ"//ライム
+    
 
     override func viewDidLoad() {
         super.viewDidLoad()
