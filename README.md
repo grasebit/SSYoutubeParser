@@ -9,7 +9,7 @@ You can not play video There are some.
 
 HCYoutubeParserを元にSwiftで作成しています。  
 HCYoutubeParserで再生できないビデオも再生出来ます。  
-一部、再生出来ないビデオもあります。
+一部の再生制限のあるビデオは再生できません。（今後クリアしたい）
 
 
 ```swift	
