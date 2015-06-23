@@ -14,8 +14,9 @@ class ViewController: UIViewController {
     @IBOutlet weak var avPlayerView: AVPlayerView!
     
     //let youtubeID = "b2fjU9cmjXg"
-    //let youtubeID = "Dtkxu1HF6rk"
-    let youtubeID = "0JxL3zWIWtQ"//ライム
+    let youtubeID = "Dtkxu1HF6rk"
+    //let youtubeID = "0JxL3zWIWtQ"//ライム
+    //let youtubeID = "PCco_YBsU3w"
     
 
     override func viewDidLoad() {
@@ -26,7 +27,7 @@ class ViewController: UIViewController {
             let videoMediumURL = videoDictionary["medium"]
             let videoHD720URL = videoDictionary["hd720"]
             
-            if let urlStr = videoHD720URL {
+            if let urlStr = videoMediumURL {
                 if let playerItem = AVPlayerItem(URL: NSURL(string: urlStr)) {
                     self.avPlayerView.player = AVPlayer(playerItem: playerItem)
                     playerItem.addObserver(self, forKeyPath: "status", options:.New | .Old | .Initial, context: nil)

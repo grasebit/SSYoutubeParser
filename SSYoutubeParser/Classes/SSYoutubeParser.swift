@@ -12,9 +12,10 @@ class SSYoutubeParser: NSObject {
    
     //static let kYoutubeURL:String = "https://m.youtube.com/watch?v="
     static let kYoutubeURL:String = "https://www.youtube.com/watch?v="
-    static let kYoutubeVideoInfoURL:NSString = "http://www.youtube.com/get_video_info?video_id=%@"
+    static let kYoutubeVideoInfoURL:NSString = "https://www.youtube.com/get_video_info?video_id=%@&asv=3&el=detailpage&ps=default&hl=en_US"
     //static let kPattern:String = "(url_encoded_fmt_stream_map\":\")(.*?)(\")"
-    static let kPattern:String = "(url_encoded_fmt_stream_map=)(.*?)(&)"
+    static let kURLEncodedFmtStreamMap:String = "(url_encoded_fmt_stream_map=)(.*?)(&)"
+    static let kAdaptiveFmts:String = "(adaptive_fmts=)(.*?)(&)"
 
     
     class func h264videosWithYoutubeID(youtubeID :String, completionHandler handler:(videoDictionary :[String:String]) -> Void) {
@@ -33,19 +34,30 @@ class SSYoutubeParser: NSObject {
         
         let urlStr = NSString(format: kYoutubeVideoInfoURL, youtubeID)
         let url = NSURL(string: urlStr as String)
-        let req = NSURLRequest(URL: url!)
+        let req = NSMutableURLRequest(URL: url!)
+        //req.addValue("Mozilla/5.0 (Windows NT 6.1; WOW64; rv:11.0) Gecko Firefox/11.0"  , forHTTPHeaderField: "User-Agent")
+        //req.valueForHTTPHeaderField("Mozilla/5.0 (Windows NT 6.1; WOW64; rv:11.0) Gecko Firefox/11.0")
+        req.addValue("en", forHTTPHeaderField: "Accept-Language")
         
         var uRLResponse : NSURLResponse?
         var httpError :NSError?
         let data:NSData = NSURLConnection.sendSynchronousRequest(req, returningResponse: &uRLResponse, error: &httpError)!
-        let html = NSString(data: data, encoding: NSUTF8StringEncoding)
         
         if httpError != nil {
             return videoDictionary
         }
         
+        
+        let html = NSString(data: data, encoding: NSUTF8StringEncoding)
+        
+        let hTTPURLResponse = uRLResponse as! NSHTTPURLResponse
+        let cookies = NSHTTPCookie.cookiesWithResponseHeaderFields(hTTPURLResponse.allHeaderFields, forURL: req.URL!)
+        let count = cookies.count
+        
+        
+        
         var regexError :NSError?
-        var regex = NSRegularExpression(pattern: kPattern, options: NSRegularExpressionOptions.allZeros, error: &regexError)
+        var regex = NSRegularExpression(pattern: kURLEncodedFmtStreamMap, options: NSRegularExpressionOptions.allZeros, error: &regexError)
         
         if regexError != nil {
             return videoDictionary
@@ -57,7 +69,6 @@ class SSYoutubeParser: NSObject {
                 
                 let decodeMap :NSString = streamMap.stringByRemovingPercentEncoding!
                 println(decodeMap)
-                //let url_encoded_fmt_stream_map :NSString = decodeMap.stringByReplacingOccurrencesOfString("\\u0026", withString: "&")
                 
                 let fmtStreamMapArray = decodeMap.componentsSeparatedByString(",") as! [String]
                 
