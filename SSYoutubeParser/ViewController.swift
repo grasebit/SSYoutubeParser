@@ -13,30 +13,31 @@ class ViewController: UIViewController {
     
     @IBOutlet weak var avPlayerView: AVPlayerView!
     
-    let youtubeID = "NetDBUYr3OE"
+    let youtubeID = "b2fjU9cmjXg"
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        SSYoutubeParser.h264videosWithYoutubeID(self.youtubeID, completionHandler: { (videoDictionary) -> Void in
-            let videoSmallURL = videoDictionary["small"]
+        SSYoutubeParser.h264videosWithYoutubeID(self.youtubeID) { (videoDictionary) -> Void in            
+            //let videoSmallURL = videoDictionary["small"]
             let videoMediumURL = videoDictionary["medium"]
-            let videoHD720URL = videoDictionary["hd720"]
+            //let videoHD720URL = videoDictionary["hd720"]
             
-            if let urlStr = videoHD720URL {
-                if let playerItem = AVPlayerItem(URL: NSURL(string: urlStr)) {
+            if let urlStr = videoMediumURL {
+                if let playerItem:AVPlayerItem = AVPlayerItem(URL: NSURL(string: urlStr)!) {
                     self.avPlayerView.player = AVPlayer(playerItem: playerItem)
-                    playerItem.addObserver(self, forKeyPath: "status", options:.New | .Old | .Initial, context: nil)
+                    playerItem.addObserver(self, forKeyPath: "status", options: [.New,.Old,.Initial], context: nil)
                 }
             }
-        })
+        }
     }
     
-    override func observeValueForKeyPath(keyPath: String, ofObject object: AnyObject, change: [NSObject : AnyObject], context: UnsafeMutablePointer<Void>) {
+    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
         if keyPath == "status" {
-            let changeOld = change["old"] as? NSNumber
-            let changeNew = change["new"] as? NSNumber
-            let status = object.status as AVPlayerItemStatus
+            let change2 = change!
+            let changeOld = change2["old"] as? NSNumber
+            let changeNew = change2["new"] as? NSNumber
+            let status = object!.status as AVPlayerItemStatus
             
             if changeOld == 0 && changeNew == 1 && status == AVPlayerItemStatus.ReadyToPlay {
                 self.avPlayerView.player.play()
@@ -46,9 +47,5 @@ class ViewController: UIViewController {
         }
     }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
 }
 
