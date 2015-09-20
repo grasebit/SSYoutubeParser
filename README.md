@@ -13,16 +13,16 @@ HCYoutubeParserで再生できないビデオも再生出来ます。
 
 
 ```swift	
-SSYoutubeParser.h264videosWithYoutubeID("YoutubeID", completionHandler: { (videoDictionary) -> Void in
+SSYoutubeParser.h264videosWithYoutubeID(YoutubeID) { (videoDictionary) -> Void in            
     let videoSmallURL = videoDictionary["small"]
     let videoMediumURL = videoDictionary["medium"]
     let videoHD720URL = videoDictionary["hd720"]
     
-    if let urlStr = videoSmallURL {
-        if let playerItem = AVPlayerItem(URL: NSURL(string: urlStr)) {
+    if let urlStr = videoMediumURL {
+        if let playerItem:AVPlayerItem = AVPlayerItem(URL: NSURL(string: urlStr)!) {
             let player = AVPlayer(playerItem: playerItem)
         }
     }
-})
+}
 ```
 
