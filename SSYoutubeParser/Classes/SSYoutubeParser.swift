@@ -10,10 +10,8 @@ import Foundation
 
 class SSYoutubeParser: NSObject {
    
-    //static let kYoutubeURL:String = "https://m.youtube.com/watch?v="
     static let kYoutubeURL:String = "https://www.youtube.com/watch?v="
     static let kYoutubeVideoInfoURL:NSString = "https://www.youtube.com/get_video_info?video_id=%@&asv=3&el=detailpage&ps=default&hl=en_US"
-    //static let kPattern:String = "(url_encoded_fmt_stream_map\":\")(.*?)(\")"
     static let kURLEncodedFmtStreamMap:String = "(url_encoded_fmt_stream_map=)(.*?)(&)"
     static let kAdaptiveFmts:String = "(adaptive_fmts=)(.*?)(&)"
 
@@ -35,42 +33,30 @@ class SSYoutubeParser: NSObject {
         let urlStr = NSString(format: kYoutubeVideoInfoURL, youtubeID)
         let url = NSURL(string: urlStr as String)
         let req = NSMutableURLRequest(URL: url!)
-        //req.addValue("Mozilla/5.0 (Windows NT 6.1; WOW64; rv:11.0) Gecko Firefox/11.0"  , forHTTPHeaderField: "User-Agent")
-        //req.valueForHTTPHeaderField("Mozilla/5.0 (Windows NT 6.1; WOW64; rv:11.0) Gecko Firefox/11.0")
         req.addValue("en", forHTTPHeaderField: "Accept-Language")
         
         var uRLResponse : NSURLResponse?
-        var httpError :NSError?
-        let data:NSData = NSURLConnection.sendSynchronousRequest(req, returningResponse: &uRLResponse, error: &httpError)!
-        
-        if httpError != nil {
+        let data:NSData = try! NSURLConnection.sendSynchronousRequest(req, returningResponse: &uRLResponse)
+        if data.length == 0 {
             return videoDictionary
         }
-        
-        
         let html = NSString(data: data, encoding: NSUTF8StringEncoding)
         
-        let hTTPURLResponse = uRLResponse as! NSHTTPURLResponse
-        let cookies = NSHTTPCookie.cookiesWithResponseHeaderFields(hTTPURLResponse.allHeaderFields, forURL: req.URL!)
-        let count = cookies.count
+        var regex: NSRegularExpression?
+        regex = try! NSRegularExpression(pattern: kURLEncodedFmtStreamMap, options: NSRegularExpressionOptions())
         
-        
-        
-        var regexError :NSError?
-        var regex = NSRegularExpression(pattern: kURLEncodedFmtStreamMap, options: NSRegularExpressionOptions.allZeros, error: &regexError)
-        
-        if regexError != nil {
+        if regex == nil {
             return videoDictionary
         }
         
-        if let result = regex?.firstMatchInString(html as String!, options: NSMatchingOptions.allZeros, range: NSMakeRange(0, html!.length)) {
+        if let result = regex?.firstMatchInString(html as String!, options: NSMatchingOptions(), range: NSMakeRange(0, html!.length)) {
             
             if let streamMap :NSString = html?.substringWithRange(result.rangeAtIndex(2)) {
                 
                 let decodeMap :NSString = streamMap.stringByRemovingPercentEncoding!
-                println(decodeMap)
+                print(decodeMap)
                 
-                let fmtStreamMapArray = decodeMap.componentsSeparatedByString(",") as! [String]
+                let fmtStreamMapArray = decodeMap.componentsSeparatedByString(",") 
                 
                 for stream in fmtStreamMapArray {
                     let videoComponents = self.dictionaryFromQueryStringComponents(stream as NSString)
@@ -121,7 +107,7 @@ class SSYoutubeParser: NSObject {
         var parameters = [String:NSMutableArray]()
         
         for keyValue in stream.componentsSeparatedByString("&") {
-            let keyValueStr = keyValue as! NSString
+            let keyValueStr = keyValue as NSString
             let keyValueArray:[AnyObject] = keyValueStr.componentsSeparatedByString("=")
             if keyValueArray.count < 2 {
                 continue
