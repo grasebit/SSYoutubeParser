@@ -13,12 +13,14 @@ class ViewController: UIViewController {
     
     @IBOutlet weak var avPlayerView: AVPlayerView!
     
-    let youtubeID = "b2fjU9cmjXg"
-
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        SSYoutubeParser.h264videosWithYoutubeID(self.youtubeID) { (videoDictionary) -> Void in            
+        self.setupVideo()
+    }
+    
+    
+    func setupVideo() {
+        SSYoutubeParser.h264videosWithYoutubeID("b2fjU9cmjXg") { (videoDictionary) -> Void in
             //let videoSmallURL = videoDictionary["small"]
             let videoMediumURL = videoDictionary["medium"]
             //let videoHD720URL = videoDictionary["hd720"]
